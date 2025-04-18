@@ -1,0 +1,146 @@
+<html><head>
+<title> Debate Watch </title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans">
+</head>
+
+<body style="background-color: rgb(51, 51, 51);">
+	<script>
+	document.body.style.backgroundColor = "#333333";
+	</script>
+
+<nav class="controls">
+			<a href="#" class="button" onclick="stopwatch.start();">Start</a>
+			<a href="#" class="button" onclick="stopwatch.stop();">Stop</a>
+			<a href="#" class="button" onclick="stopwatch.restart();">Reset</a>
+			<a href="reply.html" class="button" "="">Reply</a>
+			<a href="wsdc.html" class="button" "="">WSDC</a>
+		</nav>
+		<div class="stopwatch">00:27</div>
+		<div class="results">7 minutes substantive speech. Short bell rings at 1st and 6th minute. Long bell rings at 7th minute.<br>Side project of Andree Chandra.</div>
+<script>
+	
+	var notification = new Audio("https://themushroomkingdom.net/sounds/wav/sm64/sm64_coin.wav");
+	var notification2 = new Audio("https://themushroomkingdom.net/sounds/wav/sm64/sm64_blue_coin.wav");
+	var flag1 = true;
+	var flag6 = true;
+	var flag7 = true;
+	var flag720 = true;
+	
+	class Stopwatch {
+    constructor(display, results) {
+        this.running = false;
+        this.display = display;
+        this.results = results;
+        this.laps = [];
+        this.reset();
+        this.print(this.times);
+    }
+    
+    reset() {
+        this.times = [ 0, 0, 0 ];
+    }
+		
+    
+    start() {
+        if (!this.time) this.time = performance.now();
+        if (!this.running) {
+            this.running = true;
+            requestAnimationFrame(this.step.bind(this));
+        }
+	logRequest();
+    }
+    
+    stop() {
+        this.running = false;
+        this.time = null;
+    }
+
+    restart() {
+        location.reload();
+    }
+    
+    step(timestamp) {
+        if (!this.running) return;
+        this.calculate(timestamp);
+        this.time = timestamp;
+        this.print();
+        requestAnimationFrame(this.step.bind(this));
+    }
+    
+    calculate(timestamp) {
+        var diff = timestamp - this.time;
+        // Hundredths of a second are 100 ms
+        this.times[2] += diff / 10;
+        // Seconds are 100 hundredths of a second
+        if (this.times[2] >= 100) {
+            this.times[1] += 1;
+            this.times[2] -= 100;
+        }
+        // Minutes are 60 seconds
+        if (this.times[1] >= 60) {
+            this.times[0] += 1;
+            this.times[1] -= 60;
+        }
+	 
+	if(this.times[0] == 1) {
+		document.body.style.backgroundColor = "#0A5807";
+		if(flag1) {
+		notification.play();
+		flag1 = false;
+		}
+	}
+	else if(this.times[0] == 6) {
+		document.body.style.backgroundColor = "#CC5500";
+		if(flag6) {
+		notification.play();
+		flag6 = false;
+		}
+	}
+	else if(this.times[0] == 7) {
+		document.body.style.backgroundColor = "#800000";
+		if(flag7) {
+		notification2.play();
+		flag7 = false;
+		
+		if(this.times[1] >=20 && flag720){
+			notification2.play();
+			flag720 = false;
+			}
+		}
+	}
+    }
+    
+    print() {
+        this.display.innerText = this.format(this.times);
+    }
+    
+    format(times) {
+        return `\
+${pad0(times[0], 2)}:\
+${pad0(times[1], 2)}`;
+    }
+}
+function logRequest() {
+    var i = document.createElement("img");
+    i.src =`https://script.google.com/macros/s/AKfycbzBHw9ENcuwQcgvO-96VzOgbVAWRd5aw8m0c1CqRA2-c2XxHSN2M3FV6WMatMnT2SXfsA/exec`;
+    
+    //var Http = new XMLHttpRequest();
+    //var url=`https://script.google.com/macros/s/AKfycbxmli_mi1BPTe4HzR4Ty8ALrfjy9Ejv66pu_DDEJnUt/dev?roomid=${roomid}&status=${value}`;
+    //Http.open("GET", url);
+    //Http.send();
+}
+function pad0(value, count) {
+    var result = value.toString();
+    for (; result.length < count; --count)
+        result = '0' + result;
+    return result;
+}
+
+let stopwatch = new Stopwatch(
+     	document.querySelector('.stopwatch'),
+	document.querySelector('.results'));
+	</script>
+
+
+</body></html>
